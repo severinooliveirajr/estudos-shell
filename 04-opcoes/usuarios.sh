@@ -10,18 +10,24 @@
 # Versão 3: Adicionado suporte à opção -V e opções inválidas
 # Versão 4: Arrumando bug quando não tem opções, basename no nome do programa,
 #     -V extraindo direto dos cabeçalhos, adicionadas opções --help e --version
+# Versão 5: Adicionando opções -s e --sort
 #
 # Severino, Março de 2021
 #
+ordenar=0 # A saída deverá ser ordenada?
 MENSAGEM_USO="
 Uso: $(basename "$0") [-h] [-V]
 
-    -h Mostra esta tela de ajuda e sai
-    -V Mostra a versão do programa e sai
+    -s, --sort     Ordena a listagem alfabeticamento
+    -h, --help     Mostra esta tela de ajuda e sai
+    -V, --version  Mostra a versão do programa e sai
 "
 
 # Tratamento das opções da linha de comando
 case "$1" in
+    -s | --sort)
+        ordenar=1
+    ;;
     -h | --help)
 	echo "$MENSAGEM_USO"
 	exit 0
@@ -43,5 +49,15 @@ esac
 
 # Processamento
 
-cut -d : -f 1,5 /etc/passwd | tr : \\t
+# Extrai a listagem
+lista=$(cut -d : -f 1,5 /etc/passwd)
+
+# Ordena a listagem se necessário
+if test "$ordenar" = 1
+then
+    lista=$(echo "$lista" | sort)
+fi
+
+# Mostra o resultado para o usuário
+echo "$lista" | tr : \\t
 
