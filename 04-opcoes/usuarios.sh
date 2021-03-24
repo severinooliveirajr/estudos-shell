@@ -8,6 +8,8 @@
 # Versão 1: Mostra usuários e nomes separados por TAB
 # Versão 2: Adicionado suporte à opção -h
 # Versão 3: Adicionado suporte à opção -V e opções inválidas
+# Versão 4: Arrumando bug quando não tem opções, basename no nome do programa,
+#     -V extraindo direto dos cabeçalhos, adicionadas opções --help e --version
 #
 # Severino, Março de 2021
 #
@@ -25,7 +27,9 @@ case "$1" in
 	exit 0
     ;;
     -V | --version)
-	    echo $(basename "$0") Versão 3
+	echo -n $(basename "$0")
+	# Extrai a versão diretamente dos cabeçalhos do programa
+	grep '^# Versão' $0 | tail -1 | cut -d: -f1 | tr -d \#
 	exit 0
     ;;
     *)
